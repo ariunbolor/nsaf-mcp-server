@@ -21,7 +21,7 @@ This is a Model Context Protocol (MCP) server for the Neuro-Symbolic Autonomy Fr
 
 1. Clone this repository:
 ```bash
-git clone https://github.com/yourusername/nsaf-mcp-server.git
+git clone https://github.com/ariunbolor/nsaf-mcp-server.git
 cd nsaf-mcp-server
 ```
 
