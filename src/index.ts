@@ -4,13 +4,46 @@ import { join } from 'path';
 import * as fs from 'fs';
 import * as readline from 'readline';
 
-// Path to the NSAF Python project - now included in the same repository
-const NSAF_PROJECT_PATH = process.env.NSAF_PROJECT_PATH || './';
-
-// Check if the NSAF project exists
-if (!fs.existsSync(join(NSAF_PROJECT_PATH, 'main.py'))) {
-  console.error(`Warning: NSAF main.py not found at ${NSAF_PROJECT_PATH}. Using default path.`);
+// Determine the path to the NSAF Python project
+// First check if it's specified via environment variable
+// Then check if it's in the same directory as the script
+// Then check if it's in the parent directory (for global installs)
+function findNsafProjectPath(): string {
+  // Check environment variable first
+  if (process.env.NSAF_PROJECT_PATH && fs.existsSync(join(process.env.NSAF_PROJECT_PATH, 'main.py'))) {
+    return process.env.NSAF_PROJECT_PATH;
+  }
+  
+  // Check current directory
+  if (fs.existsSync(join('./', 'main.py'))) {
+    return './';
+  }
+  
+  // Check directory where the script is located
+  const scriptDir = __dirname;
+  if (fs.existsSync(join(scriptDir, 'main.py'))) {
+    return scriptDir;
+  }
+  
+  // Check parent directory of script (for npm global installs)
+  const parentDir = join(scriptDir, '..');
+  if (fs.existsSync(join(parentDir, 'main.py'))) {
+    return parentDir;
+  }
+  
+  // Check two levels up (for npm global installs with nested structure)
+  const grandparentDir = join(scriptDir, '..', '..');
+  if (fs.existsSync(join(grandparentDir, 'main.py'))) {
+    return grandparentDir;
+  }
+  
+  // Default to current directory with a warning
+  console.error('Warning: NSAF main.py not found. Using current directory.');
+  return './';
 }
+
+const NSAF_PROJECT_PATH = findNsafProjectPath();
+console.error(`Using NSAF project path: ${NSAF_PROJECT_PATH}`);
 
 /**
  * Execute a Python script from the NSAF project

@@ -37,7 +37,7 @@ npm run build
 
 ## Configuration
 
-The server requires the NSAF framework to be installed and accessible. You can configure the path to the NSAF project using the `NSAF_PROJECT_PATH` environment variable.
+The server includes the NSAF framework code, so no additional configuration is required for basic usage. The MCP server is designed to work out-of-the-box when installed globally.
 
 ## Usage
 
@@ -104,11 +104,9 @@ For Claude Desktop app, edit `~/Library/Application Support/Claude/claude_deskto
 {
   "mcpServers": {
     "nsaf": {
-      "command": "node",
-      "args": ["/path/to/nsaf-mcp-server/build/index.js"],
-      "env": {
-        "NSAF_PROJECT_PATH": "/path/to/nsaf-project"
-      },
+      "command": "nsaf-mcp-server",
+      "args": [],
+      "env": {},
       "disabled": false,
       "autoApprove": []
     }
@@ -122,11 +120,9 @@ For Cline, edit `/Users/onthego/Library/Application Support/Code/User/globalStor
 {
   "mcpServers": {
     "nsaf": {
-      "command": "node",
-      "args": ["/path/to/nsaf-mcp-server/build/index.js"],
-      "env": {
-        "NSAF_PROJECT_PATH": "/path/to/nsaf-project"
-      },
+      "command": "nsaf-mcp-server",
+      "args": [],
+      "env": {},
       "disabled": false,
       "autoApprove": []
     }
