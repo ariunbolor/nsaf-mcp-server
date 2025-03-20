@@ -1,24 +1,15 @@
 #!/usr/bin/env node
-import { Server } from '@modelcontextprotocol/sdk/server/index.js';
-import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
-import {
-  CallToolRequestSchema,
-  ErrorCode,
-  ListResourcesRequestSchema,
-  ListToolsRequestSchema,
-  McpError,
-  ReadResourceRequestSchema,
-} from '@modelcontextprotocol/sdk/types.js';
 import { spawn } from 'child_process';
 import { join } from 'path';
 import * as fs from 'fs';
+import * as readline from 'readline';
 
-// Path to the NSAF Python project
-const NSAF_PROJECT_PATH = process.env.NSAF_PROJECT_PATH || '../';
+// Path to the NSAF Python project - now included in the same repository
+const NSAF_PROJECT_PATH = process.env.NSAF_PROJECT_PATH || './';
 
 // Check if the NSAF project exists
 if (!fs.existsSync(join(NSAF_PROJECT_PATH, 'main.py'))) {
-  throw new Error(`NSAF project not found at ${NSAF_PROJECT_PATH}. Please set the NSAF_PROJECT_PATH environment variable.`);
+  console.error(`Warning: NSAF main.py not found at ${NSAF_PROJECT_PATH}. Using default path.`);
 }
 
 /**
@@ -52,109 +43,190 @@ async function executePythonScript(scriptPath: string, args: string[] = []): Pro
 }
 
 /**
- * NSAF MCP Server
+ * Simplified MCP Server for NSAF
  */
-class NSAFServer {
-  private server: Server;
+class SimplifiedMCPServer {
+  private rl: readline.Interface;
 
   constructor() {
-    this.server = new Server(
-      {
-        name: 'nsaf-mcp-server',
-        version: '0.1.0',
-      },
-      {
-        capabilities: {
-          resources: {},
-          tools: {},
-        },
-      }
-    );
+    this.rl = readline.createInterface({
+      input: process.stdin,
+      output: process.stdout,
+      terminal: false
+    });
 
-    this.setupToolHandlers();
-    
-    // Error handling
-    this.server.onerror = (error) => console.error('[MCP Error]', error);
-    process.on('SIGINT', async () => {
-      await this.server.close();
+    process.on('SIGINT', () => {
+      this.rl.close();
       process.exit(0);
     });
   }
 
-  private setupToolHandlers() {
-    this.server.setRequestHandler(ListToolsRequestSchema, async () => ({
-      tools: [
-        {
-          name: 'run_nsaf_evolution',
-          description: 'Run NSAF evolution with specified parameters',
-          inputSchema: {
-            type: 'object',
-            properties: {
-              population_size: {
-                type: 'number',
-                description: 'Size of the agent population',
-                default: 20,
-              },
-              generations: {
-                type: 'number',
-                description: 'Number of generations to evolve',
-                default: 10,
-              },
-              mutation_rate: {
-                type: 'number',
-                description: 'Mutation rate (0.0-1.0)',
-                default: 0.2,
-              },
-              crossover_rate: {
-                type: 'number',
-                description: 'Crossover rate (0.0-1.0)',
-                default: 0.7,
-              },
-              architecture_complexity: {
-                type: 'string',
-                description: 'Complexity of the agent architecture',
-                enum: ['simple', 'medium', 'complex'],
-                default: 'medium',
-              },
-            },
-            required: [],
-          },
-        },
-        {
-          name: 'compare_nsaf_agents',
-          description: 'Compare different NSAF agent architectures',
-          inputSchema: {
-            type: 'object',
-            properties: {
-              architectures: {
-                type: 'array',
-                description: 'List of architectures to compare',
-                items: {
-                  type: 'string',
-                  enum: ['simple', 'medium', 'complex'],
-                },
-                default: ['simple', 'medium', 'complex'],
-              },
-            },
-            required: [],
-          },
-        },
-      ],
-    }));
-
-    this.server.setRequestHandler(CallToolRequestSchema, async (request) => {
-      switch (request.params.name) {
-        case 'run_nsaf_evolution':
-          return this.handleRunNSAFEvolution(request.params.arguments);
-        case 'compare_nsaf_agents':
-          return this.handleCompareNSAFAgents(request.params.arguments);
-        default:
-          throw new McpError(
-            ErrorCode.MethodNotFound,
-            `Unknown tool: ${request.params.name}`
-          );
+  async run() {
+    console.error('NSAF MCP server running...');
+    
+    this.rl.on('line', async (line) => {
+      try {
+        const request = JSON.parse(line);
+        const response = await this.handleRequest(request);
+        console.log(JSON.stringify(response));
+      } catch (error) {
+        console.error('Error handling request:', error);
+        console.log(JSON.stringify({
+          jsonrpc: '2.0',
+          id: null,
+          error: {
+            code: -32603,
+            message: error instanceof Error ? error.message : String(error)
+          }
+        }));
       }
     });
+  }
+
+  private async handleRequest(request: any): Promise<any> {
+    if (!request.method) {
+      return {
+        jsonrpc: '2.0',
+        id: request.id,
+        error: {
+          code: -32601,
+          message: 'Method not found'
+        }
+      };
+    }
+
+    switch (request.method) {
+      case 'list_tools':
+        return this.handleListTools(request);
+      case 'call_tool':
+        return this.handleCallTool(request);
+      default:
+        return {
+          jsonrpc: '2.0',
+          id: request.id,
+          error: {
+            code: -32601,
+            message: `Method not found: ${request.method}`
+          }
+        };
+    }
+  }
+
+  private async handleListTools(request: any): Promise<any> {
+    return {
+      jsonrpc: '2.0',
+      id: request.id,
+      result: {
+        tools: [
+          {
+            name: 'run_nsaf_evolution',
+            description: 'Run NSAF evolution with specified parameters',
+            inputSchema: {
+              type: 'object',
+              properties: {
+                population_size: {
+                  type: 'number',
+                  description: 'Size of the agent population',
+                  default: 20,
+                },
+                generations: {
+                  type: 'number',
+                  description: 'Number of generations to evolve',
+                  default: 10,
+                },
+                mutation_rate: {
+                  type: 'number',
+                  description: 'Mutation rate (0.0-1.0)',
+                  default: 0.2,
+                },
+                crossover_rate: {
+                  type: 'number',
+                  description: 'Crossover rate (0.0-1.0)',
+                  default: 0.7,
+                },
+                architecture_complexity: {
+                  type: 'string',
+                  description: 'Complexity of the agent architecture',
+                  enum: ['simple', 'medium', 'complex'],
+                  default: 'medium',
+                },
+              },
+              required: [],
+            },
+          },
+          {
+            name: 'compare_nsaf_agents',
+            description: 'Compare different NSAF agent architectures',
+            inputSchema: {
+              type: 'object',
+              properties: {
+                architectures: {
+                  type: 'array',
+                  description: 'List of architectures to compare',
+                  items: {
+                    type: 'string',
+                    enum: ['simple', 'medium', 'complex'],
+                  },
+                  default: ['simple', 'medium', 'complex'],
+                },
+              },
+              required: [],
+            },
+          },
+        ]
+      }
+    };
+  }
+
+  private async handleCallTool(request: any): Promise<any> {
+    const { name, arguments: args } = request.params;
+
+    if (!name) {
+      return {
+        jsonrpc: '2.0',
+        id: request.id,
+        error: {
+          code: -32602,
+          message: 'Invalid params: missing tool name'
+        }
+      };
+    }
+
+    try {
+      let result;
+      switch (name) {
+        case 'run_nsaf_evolution':
+          result = await this.handleRunNSAFEvolution(args || {});
+          break;
+        case 'compare_nsaf_agents':
+          result = await this.handleCompareNSAFAgents(args || {});
+          break;
+        default:
+          return {
+            jsonrpc: '2.0',
+            id: request.id,
+            error: {
+              code: -32601,
+              message: `Tool not found: ${name}`
+            }
+          };
+      }
+
+      return {
+        jsonrpc: '2.0',
+        id: request.id,
+        result
+      };
+    } catch (error) {
+      return {
+        jsonrpc: '2.0',
+        id: request.id,
+        error: {
+          code: -32603,
+          message: error instanceof Error ? error.message : String(error)
+        }
+      };
+    }
   }
 
   private async handleRunNSAFEvolution(args: any): Promise<any> {
@@ -178,15 +250,7 @@ class NSAFServer {
         ],
       };
     } catch (error) {
-      return {
-        content: [
-          {
-            type: 'text',
-            text: `Error running NSAF evolution: ${error instanceof Error ? error.message : String(error)}`,
-          },
-        ],
-        isError: true,
-      };
+      throw new Error(`Error running NSAF evolution: ${error instanceof Error ? error.message : String(error)}`);
     }
   }
 
@@ -196,7 +260,6 @@ class NSAFServer {
       process.env.NSAF_ARCHITECTURES = JSON.stringify(args?.architectures || ['simple', 'medium', 'complex']);
 
       // Execute a custom script to compare agents
-      // Note: This would require creating a custom script in the NSAF project
       const result = await executePythonScript('run_example.py');
 
       return {
@@ -208,24 +271,10 @@ class NSAFServer {
         ],
       };
     } catch (error) {
-      return {
-        content: [
-          {
-            type: 'text',
-            text: `Error comparing NSAF agents: ${error instanceof Error ? error.message : String(error)}`,
-          },
-        ],
-        isError: true,
-      };
+      throw new Error(`Error comparing NSAF agents: ${error instanceof Error ? error.message : String(error)}`);
     }
-  }
-
-  async run() {
-    const transport = new StdioServerTransport();
-    await this.server.connect(transport);
-    console.error('NSAF MCP server running on stdio');
   }
 }
 
-const server = new NSAFServer();
+const server = new SimplifiedMCPServer();
 server.run().catch(console.error);

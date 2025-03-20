@@ -2,6 +2,10 @@
 
 This is a Model Context Protocol (MCP) server for the Neuro-Symbolic Autonomy Framework (NSAF). It allows AI assistants to interact with the NSAF framework through the MCP protocol.
 
+> **Note:** This repository includes both the NSAF framework code and the MCP server implementation, making it a complete package that can be deployed and used anywhere.
+
+> **Note:** This implementation uses a simplified version of the MCP protocol that doesn't require the official MCP SDK. It implements the core functionality needed to expose NSAF capabilities to AI assistants.
+
 ## Features
 
 - Run NSAF evolution with customizable parameters

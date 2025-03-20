@@ -14,8 +14,7 @@ This file provides instructions for configuring the NSAF MCP server in your AI a
      - If installed globally: Use the output of `which nsaf-mcp-server` in your terminal
      - If installed locally: `/Users/onthego/Documents/agent/nsaf_mcp_server/build/index.js`
    
-   - Replace `/path/to/nsaf-project` with the actual path to your NSAF project
-     - Example: `/Users/onthego/Documents/agent`
+   - The NSAF_PROJECT_PATH environment variable is no longer needed since the NSAF code is included in the MCP server repository
 
 3. Restart Cline to load the new MCP server
 
@@ -33,9 +32,7 @@ This file provides instructions for configuring the NSAF MCP server in your AI a
        "nsaf": {
          "command": "node",
          "args": ["/path/to/nsaf-mcp-server/build/index.js"],
-         "env": {
-           "NSAF_PROJECT_PATH": "/path/to/nsaf-project"
-         },
+         "env": {},
          "disabled": false,
          "autoApprove": []
        }
