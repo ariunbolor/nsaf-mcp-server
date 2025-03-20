@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "nsaf": {
+      "command": "node",
+      "args": ["/path/to/nsaf-mcp-server/build/index.js"],
+      "env": {
+        "NSAF_PROJECT_PATH": "/path/to/nsaf-project"
+      },
+      "disabled": false,
+      "autoApprove": []
+    }
+  }
+}
