@@ -49,15 +49,20 @@ npm start
    - Go to GitHub and create a new repository named `nsaf-mcp-server`
    - Initialize it with a README file
 
-2. Push your local code to the GitHub repository:
+2. Use the provided setup script to push your code to GitHub:
 ```bash
-git init
-git add .
-git commit -m "Initial commit"
-git branch -M main
-git remote add origin https://github.com/yourusername/nsaf-mcp-server.git
-git push -u origin main
+# For a new repository
+./setup-github-fixed.sh yourusername
+
+# If the repository already exists and you want to overwrite its content
+./setup-github-fixed.sh yourusername --force
 ```
+
+The script will:
+- Initialize git if needed
+- Set up the remote repository
+- Commit your changes
+- Try to push to GitHub (with options to handle existing repositories)
 
 3. Configure GitHub Actions for CI/CD (optional):
    - Create a `.github/workflows` directory
@@ -67,10 +72,25 @@ git push -u origin main
 
 To use this MCP server with AI assistants like Claude, you need to:
 
-1. Install the server locally:
-```bash
-npm install -g nsaf-mcp-server
-```
+1. Install the server:
+
+   Option 1: Install from GitHub (after pushing your code):
+   ```bash
+   npm install -g yourusername/nsaf-mcp-server
+   ```
+
+   Option 2: Install from your local directory:
+   ```bash
+   # Navigate to the nsaf-mcp-server directory
+   cd nsaf_mcp_server
+   
+   # Install dependencies and build
+   npm install
+   npm run build
+   
+   # Install globally from the local directory
+   npm install -g .
+   ```
 
 2. Add the server to your MCP settings configuration:
 
