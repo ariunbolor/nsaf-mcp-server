@@ -1,3 +1,5 @@
+[![MseeP.ai Security Assessment Badge](https://mseep.net/pr/ariunbolor-nsaf-mcp-server-badge.png)](https://mseep.ai/app/ariunbolor-nsaf-mcp-server)
+
 # NSAF MCP Server
 
 This is a Model Context Protocol (MCP) server for the Neuro-Symbolic Autonomy Framework (NSAF). It allows AI assistants to interact with the NSAF framework through the MCP protocol.
