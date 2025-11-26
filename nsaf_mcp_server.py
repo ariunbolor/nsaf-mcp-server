@@ -1200,44 +1200,156 @@ class NSAFMCPServer:
 
 
 async def main():
-    """Main MCP server entry point with comprehensive protocol implementation."""
+    """Main MCP server entry point with 2025 JSON-RPC protocol implementation."""
     server = NSAFMCPServer()
     
-    print("🚀 NSAF Complete MCP Server Starting", file=sys.stderr)
+    print("🚀 NSAF Complete MCP Server Starting (MCP 2025)", file=sys.stderr)
     print("Author: Bolorerdene Bundgaa (https://bolor.me)", file=sys.stderr)
     print(f"Available tools: {len(server.tools)}", file=sys.stderr)
     
-    # MCP protocol implementation
+    server_info = {
+        "name": "NSAF MCP Server",
+        "version": "1.0.0",
+        "protocolVersion": "2025-11-25"
+    }
+    initialized = False
+    
+    # MCP 2025 JSON-RPC protocol implementation
     while True:
         try:
             line = input()
             request = json.loads(line)
             
-            if request.get("method") == "tools/list":
+            # Validate JSON-RPC 2.0 format
+            if "jsonrpc" not in request or request["jsonrpc"] != "2.0":
                 response = {
-                    "tools": [
-                        {
-                            "name": tool.name,
-                            "description": tool.description,
-                            "inputSchema": tool.inputSchema
-                        }
-                        for tool in server.tools
-                    ]
+                    "jsonrpc": "2.0",
+                    "error": {
+                        "code": -32600,
+                        "message": "Invalid Request: Missing or invalid jsonrpc version"
+                    },
+                    "id": request.get("id")
                 }
-            elif request.get("method") == "tools/call":
-                tool_name = request["params"]["name"]
-                arguments = request["params"].get("arguments", {})
-                response = await server.handle_tool_call(tool_name, arguments)
+                print(json.dumps(response))
+                continue
+                
+            method = request.get("method")
+            request_id = request.get("id")
+            params = request.get("params", {})
+            
+            # Handle initialization (required for MCP 2025)
+            if method == "initialize":
+                response = {
+                    "jsonrpc": "2.0",
+                    "result": {
+                        "protocolVersion": "2025-11-25",
+                        "capabilities": {
+                            "tools": {},
+                            "logging": {},
+                        },
+                        "serverInfo": server_info
+                    },
+                    "id": request_id
+                }
+                initialized = True
+            elif method == "initialized":
+                # Notification - no response needed
+                continue
+            elif not initialized:
+                response = {
+                    "jsonrpc": "2.0",
+                    "error": {
+                        "code": -32002,
+                        "message": "Server not initialized"
+                    },
+                    "id": request_id
+                }
+            elif method == "tools/list":
+                response = {
+                    "jsonrpc": "2.0",
+                    "result": {
+                        "tools": [
+                            {
+                                "name": tool.name,
+                                "description": tool.description,
+                                "inputSchema": tool.inputSchema
+                            }
+                            for tool in server.tools
+                        ]
+                    },
+                    "id": request_id
+                }
+            elif method == "tools/call":
+                tool_name = params.get("name")
+                arguments = params.get("arguments", {})
+                
+                if not tool_name:
+                    response = {
+                        "jsonrpc": "2.0",
+                        "error": {
+                            "code": -32602,
+                            "message": "Invalid params: missing tool name"
+                        },
+                        "id": request_id
+                    }
+                else:
+                    try:
+                        tool_result = await server.handle_tool_call(tool_name, arguments)
+                        response = {
+                            "jsonrpc": "2.0",
+                            "result": {
+                                "content": [
+                                    {
+                                        "type": "text",
+                                        "text": json.dumps(tool_result, indent=2)
+                                    }
+                                ]
+                            },
+                            "id": request_id
+                        }
+                    except Exception as e:
+                        response = {
+                            "jsonrpc": "2.0",
+                            "error": {
+                                "code": -32603,
+                                "message": f"Internal error: {str(e)}"
+                            },
+                            "id": request_id
+                        }
             else:
-                response = {"error": f"Unknown method: {request.get('method')}"}
+                response = {
+                    "jsonrpc": "2.0",
+                    "error": {
+                        "code": -32601,
+                        "message": f"Method not found: {method}"
+                    },
+                    "id": request_id
+                }
                 
             print(json.dumps(response))
             
         except (EOFError, KeyboardInterrupt):
             print("🛑 NSAF MCP Server shutting down", file=sys.stderr)
             break
+        except json.JSONDecodeError as e:
+            error_response = {
+                "jsonrpc": "2.0",
+                "error": {
+                    "code": -32700,
+                    "message": f"Parse error: {str(e)}"
+                },
+                "id": None
+            }
+            print(json.dumps(error_response))
         except Exception as e:
-            error_response = {"error": f"Server error: {str(e)}"}
+            error_response = {
+                "jsonrpc": "2.0", 
+                "error": {
+                    "code": -32603,
+                    "message": f"Internal error: {str(e)}"
+                },
+                "id": request.get("id") if 'request' in locals() else None
+            }
             print(json.dumps(error_response))
 
 
