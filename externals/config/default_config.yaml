@@ -1,0 +1,168 @@
+# AI Agent Builder Configuration
+
+# Model Provider Settings
+model_provider:
+  default: "openai"  # Default model provider to use
+  openai:
+    model: "gpt-4"
+    temperature: 0.7
+    max_tokens: 1000
+    timeout: 30  # seconds
+  gemini:
+    model: "gemini-pro"
+    temperature: 0.7
+    max_tokens: 1000
+    timeout: 30
+
+# Agent Settings
+agent:
+  default_capabilities:
+    - "text_generation"
+    - "reasoning"
+    - "memory_management"
+    - "collaboration"
+  max_memory_items: 1000
+  max_conversation_history: 100
+  default_timeout: 300  # 5 minutes
+  auto_save: true
+
+# Skill Settings
+skills:
+  registry_path: "skills/registry.json"
+  config_path: "skills/configs"
+  auto_load: true
+  default_timeout: 60  # seconds
+  max_retries: 3
+
+# API Settings
+api:
+  host: "0.0.0.0"
+  port: 8000
+  debug: false
+  cors_origins:
+    - "http://localhost:3000"
+    - "http://localhost:8080"
+  rate_limit:
+    requests: 100
+    window: 60  # seconds
+
+# Database Settings
+database:
+  type: "sqlite"  # sqlite, postgresql, mysql
+  sqlite:
+    path: "data/agent_builder.db"
+  postgresql:
+    host: "localhost"
+    port: 5432
+    database: "agent_builder"
+    user: "postgres"
+    password: ""  # Set via environment variable
+  redis:
+    host: "localhost"
+    port: 6379
+    db: 0
+
+# Storage Settings
+storage:
+  type: "local"  # local, s3, gcs
+  local:
+    path: "data/storage"
+  s3:
+    bucket: "agent-builder"
+    region: "us-east-1"
+  gcs:
+    bucket: "agent-builder"
+    project: "your-project-id"
+
+# Logging Settings
+logging:
+  level: "INFO"  # DEBUG, INFO, WARNING, ERROR, CRITICAL
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  file: "logs/agent_builder.log"
+  max_size: 10485760  # 10MB
+  backup_count: 5
+  sentry:
+    enabled: false
+    dsn: ""  # Set via environment variable
+
+# Security Settings
+security:
+  jwt:
+    secret_key: ""  # Set via environment variable
+    algorithm: "HS256"
+    access_token_expire_minutes: 30
+  api_key:
+    enabled: true
+    key: ""  # Set via environment variable
+  cors:
+    allow_credentials: true
+    allow_methods: ["*"]
+    allow_headers: ["*"]
+
+# Monitoring Settings
+monitoring:
+  prometheus:
+    enabled: true
+    port: 9090
+  health_check:
+    enabled: true
+    interval: 60  # seconds
+  metrics:
+    enabled: true
+    collection_interval: 15  # seconds
+
+# Development Settings
+development:
+  testing:
+    enabled: true
+    test_data_path: "tests/data"
+  documentation:
+    auto_generate: true
+    output_path: "docs/api"
+  profiling:
+    enabled: false
+    output_path: "profiles"
+
+# Feature Flags
+features:
+  collaborative_agents: true
+  advanced_reasoning: true
+  skill_marketplace: false
+  auto_scaling: false
+  beta_features: false
+
+# Cache Settings
+cache:
+  type: "memory"  # memory, redis
+  ttl: 3600  # seconds
+  max_size: 1000  # items
+  redis:
+    url: "redis://localhost:6379/1"
+
+# Webhook Settings
+webhooks:
+  enabled: false
+  endpoints: []
+  retry:
+    max_attempts: 3
+    delay: 5  # seconds
+    backoff_factor: 2
+
+# Resource Limits
+limits:
+  max_agents: 100
+  max_skills_per_agent: 20
+  max_collaborators: 5
+  max_concurrent_tasks: 10
+  memory_limit: 1024  # MB
+  cpu_limit: 2  # cores
+
+# Error Handling
+errors:
+  retry_attempts: 3
+  backoff_factor: 2
+  max_backoff: 30  # seconds
+  fatal_exceptions:
+    - "AuthenticationError"
+    - "DatabaseConnectionError"
+    - "OutOfMemoryError"

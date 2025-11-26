@@ -1,0 +1,325 @@
+# Unified Neuro-Symbolic Autonomy Framework Configuration
+# ======================================================
+#
+# Author: Bolorerdene Bundgaa
+# Contact: bolor@ariunbolor.org
+# Website: https://bolor.me
+
+# System Settings
+system:
+  name: "Neuro-Symbolic Autonomy Framework"
+  version: "1.0.0"
+  debug: true
+  log_level: "INFO"
+  max_agents: 1000000
+
+# Foundation Models Configuration
+foundation_models:
+  default_provider: "openai"
+  
+  openai:
+    model: "gpt-4"
+    temperature: 0.7
+    max_tokens: 2048
+    embedding_model: "text-embedding-3-small"
+    api_key: null  # Set via OPENAI_API_KEY environment variable
+    
+  anthropic:
+    model: "claude-3-sonnet-20240229"
+    temperature: 0.7
+    max_tokens: 2048
+    api_key: null  # Set via ANTHROPIC_API_KEY environment variable
+    
+  google:
+    model: "gemini-pro"
+    temperature: 0.7
+    max_tokens: 2048
+    api_key: null  # Set via GOOGLE_API_KEY environment variable
+    
+  deepseek:
+    model: "deepseek-coder"
+    temperature: 0.7
+    max_tokens: 2048
+    api_key: null  # Set via DEEPSEEK_API_KEY environment variable
+
+# Quantum-Symbolic Task Clustering
+task_clustering:
+  max_cluster_size: 100
+  min_cluster_size: 5
+  similarity_threshold: 0.85
+  quantum_optimization:
+    shots: 1000
+    optimization_level: 3
+    backend: "qasm_simulator"
+    use_quantum: true
+  embedding:
+    dimension: 1536
+    provider: "openai"
+
+# Self-Constructing Meta-Agents (SCMA)
+scma:
+  generation:
+    population_size: 100
+    generations: 50
+    mutation_rate: 0.1
+    crossover_rate: 0.8
+    selection_pressure: 0.8
+    
+  architecture:
+    complexity_levels:
+      simple:
+        max_layers: 3
+        max_neurons: 64
+        hidden_layers: [32, 16]
+      medium:
+        max_layers: 6
+        max_neurons: 256
+        hidden_layers: [128, 64, 32]
+      complex:
+        max_layers: 12
+        max_neurons: 1024
+        hidden_layers: [512, 256, 128, 64]
+    
+    default_complexity: "medium"
+    use_batch_normalization: true
+    dropout_rate: 0.2
+    activation_function: "relu"
+    
+  optimization:
+    learning_rate: 0.001
+    batch_size: 32
+    epochs: 100
+    optimizer: "adam"
+    fitness_evaluation_steps: 100
+    
+  distributed:
+    use_ray: true
+    num_workers: 4
+
+# Hyper-Symbolic Memory Tuning
+memory_tuning:
+  memory_size: 1000000
+  retention_rate: 0.95
+  forgetting_factor: 0.1
+  consolidation_interval: 3600  # seconds
+  
+  symbolic_reasoning:
+    max_depth: 10
+    inference_timeout: 30  # seconds
+    use_rdf: true
+    
+  graph:
+    max_connections: 50
+    similarity_threshold: 0.7
+    clustering_algorithm: "spectral"
+    
+  enhancement:
+    use_foundation_models: true
+    enhancement_interval: 300  # seconds
+
+# Recursive Intent Projection (RIP)
+recursive_intent:
+  projection_depth: 5
+  confidence_threshold: 0.8
+  update_frequency: 60  # seconds
+  max_iterations: 100
+  
+  planning:
+    horizon: 10  # steps
+    branching_factor: 3
+    use_monte_carlo: true
+    
+  optimization:
+    learning_rate: 0.001
+    batch_size: 16
+    use_foundation_models: true
+
+# Human-AI Synergy
+human_ai_synergy:
+  sync_interval: 0.1  # seconds
+  max_latency: 0.5  # seconds
+  batch_size: 16
+  priority_levels: 5
+  
+  cognitive_modeling:
+    attention_mechanism: "transformer"
+    memory_capacity: 1000
+    adaptation_rate: 0.1
+    
+  interfaces:
+    web_ui: true
+    api_endpoint: true
+    mcp_protocol: true
+
+# Distributed Computing
+distributed:
+  ray:
+    enabled: true
+    num_cpus: 8
+    num_gpus: 2
+    memory_limit: "32GB"
+    
+  scaling:
+    min_workers: 2
+    max_workers: 100
+    target_utilization: 0.8
+    auto_scale: true
+
+# Web API Configuration
+api:
+  enabled: true
+  host: "0.0.0.0"
+  port: 8000
+  debug: false
+  
+  cors:
+    allow_origins:
+      - "http://localhost:3000"
+      - "http://localhost:8080"
+    allow_credentials: true
+    allow_methods: ["*"]
+    allow_headers: ["*"]
+    
+  rate_limit:
+    requests: 100
+    window: 60  # seconds
+    
+  security:
+    jwt_secret: null  # Set via JWT_SECRET environment variable
+    api_key: null     # Set via API_KEY environment variable
+    token_expire_minutes: 30
+
+# Database Configuration
+database:
+  type: "sqlite"  # sqlite, postgresql, redis
+  
+  sqlite:
+    path: "data/nsaf.db"
+    
+  postgresql:
+    host: "localhost"
+    port: 5432
+    database: "nsaf"
+    user: "nsaf"
+    password: null  # Set via DATABASE_PASSWORD environment variable
+    
+  redis:
+    host: "localhost"
+    port: 6379
+    db: 0
+    password: null  # Set via REDIS_PASSWORD environment variable
+
+# Monitoring and Evaluation
+monitoring:
+  enabled: true
+  metrics_interval: 60  # seconds
+  save_interval: 3600  # seconds
+  
+  wandb:
+    enabled: false
+    project: "nsaf"
+    tags: ["research", "neuro-symbolic", "autonomy"]
+    api_key: null  # Set via WANDB_API_KEY environment variable
+    
+  prometheus:
+    enabled: false
+    port: 9090
+    
+  performance_thresholds:
+    accuracy: 0.95
+    latency: 100  # milliseconds
+    reliability: 0.99
+
+# Storage and Persistence
+storage:
+  type: "local"  # local, s3, gcs
+  checkpoint_interval: 3600  # seconds
+  max_checkpoints: 10
+  backup_frequency: 86400  # seconds (daily)
+  compression_level: 9
+  
+  local:
+    path: "data/storage"
+    
+  s3:
+    bucket: "nsaf-storage"
+    region: "us-east-1"
+    access_key: null  # Set via AWS_ACCESS_KEY_ID
+    secret_key: null  # Set via AWS_SECRET_ACCESS_KEY
+    
+  gcs:
+    bucket: "nsaf-storage"
+    project: "nsaf-project"
+    credentials: null  # Set via GOOGLE_APPLICATION_CREDENTIALS
+
+# Security Configuration
+security:
+  encryption_enabled: true
+  encryption_algorithm: "AES-256"
+  key_rotation_interval: 86400  # seconds (daily)
+  
+  access_control:
+    authentication_required: true
+    token_expiry: 3600  # seconds
+    max_login_attempts: 5
+    
+  data_protection:
+    anonymize_logs: true
+    secure_connections_only: true
+
+# MCP Protocol Configuration
+mcp:
+  enabled: true
+  max_concurrent_requests: 10
+  request_timeout: 30  # seconds
+  
+  tools:
+    evolution:
+      enabled: true
+      max_population: 100
+      max_generations: 50
+      
+    memory_analysis:
+      enabled: true
+      max_results: 50
+      
+    intent_projection:
+      enabled: true
+      max_depth: 10
+      
+    task_clustering:
+      enabled: true
+      max_clusters: 20
+
+# Development and Testing
+development:
+  test_coverage_threshold: 0.90
+  lint_on_commit: true
+  auto_format: true
+  type_checking: true
+  
+  testing:
+    enabled: true
+    test_data_path: "tests/data"
+    mock_external_apis: true
+    
+  documentation:
+    auto_generate: true
+    output_path: "docs/api"
+    
+  profiling:
+    enabled: false
+    output_path: "profiles"
+
+# Feature Flags
+features:
+  quantum_computing: true
+  distributed_processing: true
+  foundation_model_integration: true
+  web_api: true
+  mcp_protocol: true
+  advanced_memory: true
+  intent_projection: true
+  human_ai_synergy: true
+  real_time_monitoring: false
+  auto_scaling: true

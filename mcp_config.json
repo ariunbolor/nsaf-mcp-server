@@ -1,0 +1,135 @@
+{
+  "name": "nsaf-framework",
+  "version": "1.0.0",
+  "description": "Complete Neuro-Symbolic Autonomy Framework MCP Server",
+  "author": "Bolorerdene Bundgaa",
+  "contact": "bolor@ariunbolor.org",
+  "website": "https://bolor.me",
+  "server": {
+    "command": "python3",
+    "args": ["nsaf_mcp_server.py"],
+    "env": {
+      "PYTHONPATH": "."
+    }
+  },
+  "capabilities": {
+    "tools": true,
+    "resources": false,
+    "prompts": false
+  },
+  "categories": [
+    "AI Framework",
+    "Quantum Computing", 
+    "Machine Learning",
+    "Task Management",
+    "Neural Networks",
+    "Symbolic Reasoning"
+  ],
+  "tools": {
+    "framework_management": [
+      "initialize_nsaf_framework",
+      "get_nsaf_status", 
+      "shutdown_nsaf_framework"
+    ],
+    "task_processing": [
+      "process_complex_task",
+      "get_task_status",
+      "update_task_state"
+    ],
+    "quantum_symbolic": [
+      "cluster_tasks_quantum"
+    ],
+    "meta_agents": [
+      "evolve_agents_scma",
+      "get_active_agents"
+    ],
+    "memory_system": [
+      "add_memory",
+      "query_memory", 
+      "get_memory_metrics"
+    ],
+    "intent_projection": [
+      "project_intent_recursive"
+    ],
+    "human_ai_synergy": [
+      "synchronize_cognitive_state"
+    ],
+    "foundation_models": [
+      "generate_with_foundation_models",
+      "get_embeddings"
+    ],
+    "system_analytics": [
+      "analyze_system_performance",
+      "update_configuration",
+      "get_configuration"
+    ]
+  },
+  "requirements": {
+    "python": ">=3.9",
+    "dependencies": [
+      "numpy>=1.26.0",
+      "torch>=2.0.0",
+      "qiskit>=2.0.0",
+      "qiskit_aer>=0.17.0", 
+      "ray>=2.0.0",
+      "rdflib>=7.0.0",
+      "tensorflow>=2.20.0",
+      "fastapi>=0.100.0",
+      "yaml>=6.0",
+      "networkx>=3.0",
+      "scikit-learn>=1.6.0",
+      "pandas>=2.3.0",
+      "sympy>=1.12"
+    ]
+  },
+  "documentation": {
+    "overview": "NSAF is a complete neuro-symbolic autonomy framework providing quantum-enhanced task processing, self-constructing meta-agents, hyper-symbolic memory, recursive intent projection, and human-AI synergy capabilities.",
+    "features": [
+      "Multi-objective task decomposition and processing",
+      "Quantum-symbolic clustering algorithms", 
+      "Self-constructing meta-agent evolution with distributed computing",
+      "Hyper-symbolic memory with graph-based reasoning",
+      "Recursive intent projection with neural networks",
+      "Human-AI cognitive state synchronization",
+      "Multi-provider foundation model integration",
+      "Real-time system monitoring and analytics"
+    ],
+    "examples": [
+      {
+        "name": "Process Complex Task",
+        "tool": "process_complex_task",
+        "description": "Process a multi-objective task like building a fraud detection system",
+        "args": {
+          "description": "Build an intelligent fraud detection system",
+          "goals": [
+            {"type": "accuracy", "target": 0.95, "priority": 1.0},
+            {"type": "latency", "target": 50, "priority": 0.9}
+          ],
+          "constraints": [
+            {"type": "budget", "limit": 50000, "importance": 0.9}
+          ]
+        }
+      },
+      {
+        "name": "Project Future Intent",
+        "tool": "project_intent_recursive", 
+        "description": "Project future states for an AI research assistant",
+        "args": {
+          "intent_description": "Build an autonomous AI research assistant",
+          "projection_depth": 5,
+          "confidence_threshold": 0.7
+        }
+      },
+      {
+        "name": "Evolve Specialized Agents",
+        "tool": "evolve_agents_scma",
+        "description": "Create optimized agents for neural architecture search",
+        "args": {
+          "task_description": "Optimize neural architecture search",
+          "population_size": 20,
+          "generations": 10
+        }
+      }
+    ]
+  }
+}
