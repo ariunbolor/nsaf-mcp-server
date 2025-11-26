@@ -42,8 +42,8 @@ This is the **unified, production-ready version** that combines:
 ### **Quick Install**
 ```bash
 # Clone the repository
-git clone https://github.com/your-username/nsaf.git
-cd nsaf
+git clone https://github.com/ariunbolor/nsaf-mcp-server.git
+cd nsaf-mcp-server
 
 # Install all dependencies
 pip install -r requirements.txt
